@@ -1,0 +1,175 @@
+{
+  "info": {
+    "name": "BiteSpeed Identity Reconciliation",
+    "description": "API collection for testing identity reconciliation endpoints",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/health",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "health"]
+        }
+      }
+    },
+    {
+      "name": "New User Registration",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"john@example.com\",\n  \"phoneNumber\": \"1234567890\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/identify",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "identify"]
+        }
+      }
+    },
+    {
+      "name": "Same Email Different Phone",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"john@example.com\",\n  \"phoneNumber\": \"0987654321\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/identify",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "identify"]
+        }
+      }
+    },
+    {
+      "name": "Same Phone Different Email",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"jane@example.com\",\n  \"phoneNumber\": \"1234567890\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/identify",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "identify"]
+        }
+      }
+    },
+    {
+      "name": "Email Only",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"alice@example.com\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/identify",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "identify"]
+        }
+      }
+    },
+    {
+      "name": "Phone Only",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"phoneNumber\": \"5555555555\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/identify",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "identify"]
+        }
+      }
+    },
+    {
+      "name": "Invalid Request - Missing Both",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/identify",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "identify"]
+        }
+      }
+    },
+    {
+      "name": "Invalid Request - Bad Email",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"invalid-email\",\n  \"phoneNumber\": \"1234567890\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/identify",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "identify"]
+        }
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    }
+  ]
+}
