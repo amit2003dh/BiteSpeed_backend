@@ -10,22 +10,44 @@ async function startServer() {
     logger.info('Starting server...');
     logger.info(`Environment: ${process.env.NODE_ENV || 'development'}`);
     
-    // Add timeout for database connection
-    const connectionTimeout = setTimeout(() => {
-      logger.error('Database connection timeout - check your database configuration');
-      process.exit(1);
-    }, 10000); // 10 seconds timeout
+    // Debug environment variables (without exposing sensitive data)
+    logger.info('Environment check:', {
+      NODE_ENV: process.env.NODE_ENV,
+      PORT: process.env.PORT,
+      DB_HOST: process.env.DB_HOST ? 'SET' : 'MISSING',
+      DB_PORT: process.env.DB_PORT,
+      DB_NAME: process.env.DB_NAME ? 'SET' : 'MISSING',
+      DB_USER: process.env.DB_USER ? 'SET' : 'MISSING',
+      DB_PASSWORD: process.env.DB_PASSWORD ? 'SET' : 'MISSING'
+    });
+    
+    // Try database connection with timeout
+    let dbConnected = false;
+    try {
+      const connectionTimeout = setTimeout(() => {
+        logger.error('Database connection timeout - continuing without database');
+      }, 5000); // 5 seconds timeout
 
-    await sequelize.authenticate();
-    clearTimeout(connectionTimeout);
-    logger.info('Database connection established successfully');
+      await sequelize.authenticate();
+      clearTimeout(connectionTimeout);
+      logger.info('Database connection established successfully');
+      
+      await sequelize.sync({ alter: true });
+      logger.info('Database synchronized');
+      dbConnected = true;
+      
+    } catch (dbError) {
+      logger.error('Database connection failed:', { 
+        error: dbError.message,
+        stack: dbError.stack
+      });
+    }
 
-    await sequelize.sync({ alter: true });
-    logger.info('Database synchronized');
-
+    // Start server regardless of database connection
     app.listen(PORT, () => {
       logger.info(`Server running on port ${PORT}`);
       logger.info(`Environment: ${process.env.NODE_ENV || 'development'}`);
+      logger.info(`Database: ${dbConnected ? 'CONNECTED' : 'DISCONNECTED (running in fallback mode)'}`);
     });
 
   } catch (error) {
