@@ -27,7 +27,39 @@ src/
 - **Error Handling**: Graceful error handling and recovery
 - **Health Checks**: Built-in health check endpoints
 
-## 📋 Requirements
+## � Quick Start
+
+### **Local Development**
+```bash
+# Install dependencies
+npm install
+
+# Start the server (uses SQLite for development)
+npm start
+
+# Run tests
+npm test
+
+# Run tests in watch mode
+npm run test:watch
+```
+
+### **Manual Testing**
+```powershell
+# Health check
+Invoke-WebRequest -Uri "http://localhost:3000/api/health" -Method GET -UseBasicParsing
+
+# Test identity resolution
+Invoke-WebRequest -Uri "http://localhost:3000/api/identify" -Method POST -ContentType "application/json" -Body '{"email":"test@example.com","phoneNumber":"1234567890"}' -UseBasicParsing
+```
+
+### **Server Status**
+- **Development**: Runs on `http://localhost:3000`
+- **Database**: SQLite (automatically created)
+- **Environment**: Development mode
+- **Logs**: Stored in `logs/` directory
+
+## � Requirements
 
 - Node.js >= 16.0.0
 - Render account (for PostgreSQL database)
@@ -104,6 +136,38 @@ DB_PASSWORD=your-actual-password
   "timestamp": "2024-01-01T00:00:00.000Z",
   "service": "identity-reconciliation"
 }
+```
+
+## 🧪 Testing Examples
+
+### **Scenario 1: New User**
+```powershell
+Invoke-WebRequest -Uri "http://localhost:3000/api/identify" -Method POST -ContentType "application/json" -Body '{"email":"alice@example.com","phoneNumber":"1111111111"}' -UseBasicParsing
+```
+
+### **Scenario 2: Same Email, Different Phone**
+```powershell
+Invoke-WebRequest -Uri "http://localhost:3000/api/identify" -Method POST -ContentType "application/json" -Body '{"email":"alice@example.com","phoneNumber":"2222222222"}' -UseBasicParsing
+```
+
+### **Scenario 3: Same Phone, Different Email**
+```powershell
+Invoke-WebRequest -Uri "http://localhost:3000/api/identify" -Method POST -ContentType "application/json" -Body '{"email":"bob@example.com","phoneNumber":"1111111111"}' -UseBasicParsing
+```
+
+### **Scenario 4: Email Only**
+```powershell
+Invoke-WebRequest -Uri "http://localhost:3000/api/identify" -Method POST -ContentType "application/json" -Body '{"email":"charlie@example.com"}' -UseBasicParsing
+```
+
+### **Scenario 5: Phone Only**
+```powershell
+Invoke-WebRequest -Uri "http://localhost:3000/api/identify" -Method POST -ContentType "application/json" -Body '{"phoneNumber":"3333333333"}' -UseBasicParsing
+```
+
+### **Scenario 6: Validation Error**
+```powershell
+Invoke-WebRequest -Uri "http://localhost:3000/api/identify" -Method POST -ContentType "application/json" -Body '{}' -UseBasicParsing
 ```
 
 ## 🧪 Testing

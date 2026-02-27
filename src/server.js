@@ -1,8 +1,6 @@
 require('dotenv').config();
 const app = require('./app');
-const sequelize = process.env.NODE_ENV === 'production' 
-  ? require('./config/database') 
-  : require('./config/database-sqlite');
+const sequelize = require('./config/database');
 const logger = require('./utils/logger');
 
 const PORT = process.env.PORT || 3000;

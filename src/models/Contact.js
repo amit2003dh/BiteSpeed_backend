@@ -1,7 +1,5 @@
 const { DataTypes } = require('sequelize');
-const sequelize = process.env.NODE_ENV === 'production' 
-  ? require('../config/database') 
-  : require('../config/database-sqlite');
+const sequelize = require('../config/database');
 
 const Contact = sequelize.define('Contact', {
   id: {
@@ -21,11 +19,7 @@ const Contact = sequelize.define('Contact', {
   linkedId: {
     type: DataTypes.INTEGER,
     allowNull: true,
-    field: 'linked_id',
-    references: {
-      model: 'contacts',
-      key: 'id'
-    }
+    field: 'linked_id'
   },
   linkPrecedence: {
     type: DataTypes.STRING,
