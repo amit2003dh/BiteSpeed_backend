@@ -7,7 +7,17 @@ const PORT = process.env.PORT || 3000;
 
 async function startServer() {
   try {
+    logger.info('Starting server...');
+    logger.info(`Environment: ${process.env.NODE_ENV || 'development'}`);
+    
+    // Add timeout for database connection
+    const connectionTimeout = setTimeout(() => {
+      logger.error('Database connection timeout - check your database configuration');
+      process.exit(1);
+    }, 10000); // 10 seconds timeout
+
     await sequelize.authenticate();
+    clearTimeout(connectionTimeout);
     logger.info('Database connection established successfully');
 
     await sequelize.sync({ alter: true });
@@ -19,7 +29,13 @@ async function startServer() {
     });
 
   } catch (error) {
-    logger.error('Failed to start server', { error: error.message, stack: error.stack });
+    logger.error('Failed to start server', { 
+      error: error.message, 
+      stack: error.stack,
+      env: process.env.NODE_ENV,
+      dbHost: process.env.DB_HOST ? 'configured' : 'missing',
+      dbName: process.env.DB_NAME ? 'configured' : 'missing'
+    });
     process.exit(1);
   }
 }
